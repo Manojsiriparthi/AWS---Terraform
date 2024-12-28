@@ -13,16 +13,6 @@ variable "write_capacity" {
   type        = number
 }
 
-variable "hash_key" {
-  description = "Hash key for the DynamoDB table"
-  type        = string
-}
-
-variable "range_key" {
-  description = "Range key for the DynamoDB table"
-  type        = string
-}
-
 variable "environment" {
   description = "Environment (dev, staging, prod)"
   type        = string

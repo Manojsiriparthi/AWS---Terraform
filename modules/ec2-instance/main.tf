@@ -1,11 +1,10 @@
 resource "aws_launch_configuration" "main" {
-  name          = "${var.environment}-launch-configuration"
+  name          = "${var.environment}-launch-configuration-${replace(timestamp(), ":", "-")}"
   image_id      = var.ami
   instance_type = var.instance_type
   security_groups = [var.security_group_id]
 
-  ebs_block_device {
-    device_name           = "/dev/xvda"
+  root_block_device {
     volume_size           = 30
     volume_type           = "gp2"
     delete_on_termination = true
@@ -18,7 +17,6 @@ resource "aws_launch_configuration" "main" {
   user_data = <<-EOF
               #!/bin/bash
               echo "Hello, World" > index.html
-              nohup busybox httpd -f -p ${var.http_port} &
               EOF
 
   depends_on = [aws_iam_instance_profile.main]
@@ -34,7 +32,7 @@ resource "aws_autoscaling_group" "main" {
 
   tag {
     key                 = "Name"
-    value               = "AutoScaling-${var.environment}"
+    value               = "${var.environment}-asg"
     propagate_at_launch = true
   }
 
