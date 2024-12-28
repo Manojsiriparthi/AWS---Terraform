@@ -68,8 +68,6 @@ module "dynamodb" {
   table_name = var.dynamodb_table_name
   read_capacity = var.dynamodb_read_capacity
   write_capacity = var.dynamodb_write_capacity
-  hash_key = var.dynamodb_hash_key
-  range_key = var.dynamodb_range_key
   environment = var.environment
   count = var.include_dynamodb ? 1 : 0
 }
