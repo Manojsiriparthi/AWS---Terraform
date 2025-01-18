@@ -72,3 +72,60 @@ module "dynamodb" {
   count = var.include_dynamodb ? 1 : 0
 }
 
+# Create Launch Configuration
+module "launch_configuration" {
+  source        = "./modules/launch_configuration"
+  name          = var.launch_configuration_name
+  ami_id        = var.ami_id
+  instance_type = var.instance_type
+  key_name      = var.key_name
+  security_groups = var.security_groups
+  user_data     = var.user_data
+}
+
+# Create ALB
+module "alb" {
+  source         = "./modules/alb"
+  name           = var.alb_name
+  security_groups = var.security_groups
+  subnet_ids     = var.subnet_ids
+}
+
+# Create Target Group
+module "target_group" {
+  source         = "./modules/target_group"
+  name           = var.target_group_name
+  port           = 80
+  protocol       = "HTTP"
+  vpc_id         = var.vpc_id
+}
+
+# Create Auto Scaling Group
+module "autoscaling_group" {
+  source              = "./modules/autoscaling_group"
+  name                = var.asg_name
+  desired_capacity    = var.desired_capacity
+  max_size            = var.max_size
+  min_size            = var.min_size
+  launch_configuration_id = module.launch_configuration.id
+  subnet_ids          = var.subnet_ids
+  load_balancer_ids   = [module.alb.id]
+  target_group_arns   = [module.target_group.arn]
+}
+
+# Create CloudWatch Alarm
+module "cloudwatch_alarm" {
+  source           = "./modules/cloudwatch"
+  alarm_name       = var.alarm_name
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods = 2
+  metric_name      = "CPUUtilization"
+  namespace        = "AWS/EC2"
+  period           = 60
+  statistic        = "Average"
+  threshold        = 80
+  asg_name         = module.autoscaling_group.asg_name
+  ok_actions       = []
+  alarm_actions    = [var.sns_topic_arn]
+}
+

@@ -170,3 +170,52 @@ variable "include_dynamodb" {
   type        = bool
 }
 
+variable "key_name" {
+  description = "Key name for EC2 instances"
+  type        = string
+}
+
+variable "launch_configuration_name" {
+  description = "Launch Configuration name"
+  type        = string
+}
+
+variable "alb_name" {
+  description = "Application Load Balancer name"
+  type        = string
+}
+
+variable "target_group_name" {
+  description = "Target Group name"
+  type        = string
+}
+
+variable "asg_name" {
+  description = "Auto Scaling Group name"
+  type        = string
+}
+
+variable "desired_capacity" {
+  description = "Desired number of instances in ASG"
+  type        = number
+}
+
+variable "max_size" {
+  description = "Max number of instances in ASG"
+  type        = number
+}
+
+variable "min_size" {
+  description = "Min number of instances in ASG"
+  type        = number
+}
+
+variable "sns_topic_arn" {
+  description = "SNS topic ARN for alarm actions"
+  type        = string
+}
+
+variable "user_data" {
+  description = "User data script"
+  type        = string
+}
