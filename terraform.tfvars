@@ -5,6 +5,10 @@ include_eks = false
 include_rds = true
 include_s3 = false
 include_dynamodb = false
+include_load_balancer      = true
+include_auto_scaling_group = true
+include_cloudwatch         = true
+
 
 #region
 region = "us-east-1"
